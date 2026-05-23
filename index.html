@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Sayang ❤️</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Caveat & Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti untuk efek Surprise Box -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'cursive': ['Caveat', 'cursive'],
+                        'sans': ['Nunito', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#fff0f3',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            300: '#fda4af',
+                            400: '#fb7185',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                            800: '#9f1239',
+                            900: '#4a0e2e', 
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(244,63,94,0.15)',
+                        'floating': '0 20px 50px -10px rgba(244,63,94,0.3)',
+                        'glow': '0 0 40px 10px rgba(251, 113, 133, 0.4)',
+                    },
+                    animation: {
+                        'float-up': 'floatUp 8s linear infinite',
+                        'float-slow': 'float 6s ease-in-out infinite',
+                        'float-sway': 'floatSway 6s ease-in-out infinite',
+                        'float-capybara': 'floatCapybara 4s ease-in-out infinite',
+                        'heartbeat': 'heartbeat 1.5s ease-in-out infinite',
+                        'spin-slow': 'spin 10s linear infinite',
+                        'wiggle': 'wiggle 2s ease-in-out infinite',
+                        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
+                        'equalizer-1': 'equalizer 1s ease-in-out infinite',
+                        'equalizer-2': 'equalizer 1.2s ease-in-out infinite 0.2s',
+                        'equalizer-3': 'equalizer 0.8s ease-in-out infinite 0.4s',
+                        'float-note-1': 'floatNote 4s linear infinite',
+                        'float-note-2': 'floatNote 5s linear infinite 1.5s',
+                        'float-note-3': 'floatNote 4.5s linear infinite 3s',
+                    },
+                    keyframes: {
+                        floatUp: {
+                            '0%': { transform: 'translateY(100vh) scale(0.5) rotate(0deg)', opacity: '0' },
+                            '10%': { opacity: '0.8' },
+                            '90%': { opacity: '0.8' },
+                            '100%': { transform: 'translateY(-10vh) scale(1.2) rotate(45deg)', opacity: '0' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        floatSway: {
+                            '0%, 100%': { transform: 'translateY(0) rotate(-3deg)' },
+                            '50%': { transform: 'translateY(-15px) rotate(3deg)' },
+                        },
+                        floatCapybara: {
+                            '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+                            '25%': { transform: 'translateY(-10px) rotate(-2deg)' },
+                            '50%': { transform: 'translateY(0) rotate(0deg)' },
+                            '75%': { transform: 'translateY(10px) rotate(2deg)' },
+                        },
+                        heartbeat: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '14%': { transform: 'scale(1.1)' },
+                            '28%': { transform: 'scale(1)' },
+                            '42%': { transform: 'scale(1.1)' },
+                            '70%': { transform: 'scale(1)' },
+                        },
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-5deg)' },
+                            '50%': { transform: 'rotate(5deg)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { opacity: 0.5, transform: 'scale(1)' },
+                            '50%': { opacity: 0.8, transform: 'scale(1.05)' },
+                        },
+                        equalizer: {
+                            '0%, 100%': { height: '8px' },
+                            '50%': { height: '24px' },
+                        },
+                        floatNote: {
+                            '0%': { transform: 'translateY(0) scale(1) rotate(0deg)', opacity: 0 },
+                            '20%': { opacity: 1 },
+                            '80%': { opacity: 1 },
+                            '100%': { transform: 'translateY(-120px) scale(1.5) rotate(30deg)', opacity: 0 },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { -webkit-tap-highlight-color: transparent; }
+        
+        .page-transition { 
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out; 
+        }
+        .fade-out {
+            opacity: 0; 
+            transform: scale(0.95); 
+            pointer-events: none;
+        }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #fff0f3; }
+        ::-webkit-scrollbar-thumb { background: #fda4af; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #fb7185; }
+        .date-input {
+            width: 60px; text-align: center; font-size: 1.25rem; font-weight: 700; color: #be123c;
+            border: 2px solid #ffe4e6; border-radius: 0.75rem; padding: 0.5rem; background: #ffffff; transition: all 0.3s;
+        }
+        .date-input:focus { outline: none; border-color: #fb7185; box-shadow: 0 0 0 3px rgba(251, 113, 133, 0.2); }
+        
+        .polaroid { background: white; padding: 1rem 1rem 3.5rem 1rem; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border: 1px solid #fecdd3; border-radius: 4px; }
+
+        .paper-pattern {
+            background-color: #fff;
+            background-image: linear-gradient(transparent 95%, #fecdd3 95%);
+            background-size: 100% 2rem;
+        }
+        
+        /* Pita dekorasi untuk polaroid */
+        .cute-tape {
+            background-color: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* Perspective for 3D Cards */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+
+        /* Music Paused State */
+        .is-paused .animate-spin-slow,
+        .is-paused .animate-equalizer-1,
+        .is-paused .animate-equalizer-2,
+        .is-paused .animate-equalizer-3 {
+            animation-play-state: paused !important;
+        }
+    </style>
+</head>
+<body class="bg-brand-50 text-gray-800 font-sans overflow-x-hidden">
+
+    <!-- Audio Element (Menggunakan link sumber yang lebih reliabel) -->
+    <audio id="bg-music" loop preload="auto">
+    <source src="Ed Sheeran-Perfect.mp3" type="audio/mpeg">
+</audio>
+
+    <!-- ========================================== -->
+    <!-- SECTION 1: LOGIN SCREEN -->
+    <!-- ========================================== -->
+    <div id="login-screen" class="page-transition min-h-screen w-full bg-gradient-to-b from-brand-900 via-[#6b1643] to-[#8f1954] flex flex-col items-center justify-center relative overflow-hidden">
+        <div id="hearts-container" class="absolute inset-0 pointer-events-none"></div>
+        <div class="z-10 flex flex-col items-center justify-center w-full max-w-md px-6 pt-10 pb-20 h-full relative">
+            <div class="text-center mb-10 animate-float-slow">
+                <p class="text-brand-300 text-lg font-semibold tracking-widest uppercase mb-2">Happy</p>
+                <h1 class="text-white font-cursive text-7xl drop-shadow-lg leading-none">Birthday</h1>
+                <h2 class="text-brand-200 font-cursive text-5xl drop-shadow-md -mt-2">Sayang <span class="text-3xl text-brand-400 animate-pulse">❤</span></h2>
+            </div>
+            <div class="bg-white/95 backdrop-blur-md rounded-[2rem] p-8 w-full shadow-floating text-center border border-white/40 transform transition-all">
+                <div class="w-16 h-16 bg-brand-100 rounded-full flex items-center justify-center mx-auto -mt-16 mb-4 shadow-lg border-4 border-white">
+                    <span class="text-2xl text-brand-500">🔒</span>
+                </div>
+                <p class="text-gray-600 font-medium text-sm mb-6">Masukkan tanggal ulang tahun kamu<br>untuk masuk ke tempat spesial ini</p>
+                <div class="flex justify-center items-center gap-3 mb-6">
+                    <input type="text" id="input-dd" class="date-input" placeholder="DD" maxlength="2" inputmode="numeric">
+                    <span class="text-brand-300 font-bold text-xl">/</span>
+                    <input type="text" id="input-mm" class="date-input" placeholder="MM" maxlength="2" inputmode="numeric">
+                    <span class="text-brand-300 font-bold text-xl">/</span>
+                    <input type="text" id="input-yyyy" class="date-input !w-20" placeholder="YYYY" maxlength="4" inputmode="numeric">
+                </div>
+                <p id="error-message" class="text-red-500 text-xs font-bold mb-4 opacity-0 transition-opacity">Tanggalnya salah sayang, coba ingat lagi 🥺</p>
+                <button id="btn-masuk" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all transform hover:-translate-y-1 active:scale-95 flex justify-center items-center gap-2 group">
+                    <span>Masuk</span>
+                    <span class="group-hover:animate-heartbeat">❤</span>
+                </button>
+            </div>
+            <div class="mt-8 text-white/60 text-xs flex items-center gap-2">
+                <span>❤</span> Jangan lupa full'in volume nya yaa
+            </div>
+            <div class="absolute bottom-[-20px] left-1/2 transform -translate-x-1/2 w-64 opacity-80 pointer-events-none flex justify-center items-end">
+                <div class="w-full h-32 bg-gradient-to-t from-brand-900 to-transparent flex items-end justify-center pb-4">
+                    <div class="text-6xl animate-bounce drop-shadow-lg">💌</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SECTION 2: MAIN APP -->
+    <!-- ========================================== -->
+    <div id="main-app" class="page-transition fade-out hidden min-h-screen bg-brand-50 relative overflow-hidden">
+        
+        <!-- Navigation Bar -->
+        <nav class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 border-b border-brand-100 shadow-sm">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-center items-center h-20">
+                    <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer group" onclick="window.scrollTo(0,0)">
+                        <span class="text-2xl group-hover:animate-wiggle">🎁</span>
+                        <span class="font-cursive text-3xl font-bold text-brand-700">Happy Birthday</span>
+                        <span class="font-cursive text-3xl text-brand-400">Sayang</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative">
+            
+            <!-- REDESIGNED: HERO SECTION (Cute Moving Capybara) -->
+            <div class="relative w-full max-w-5xl mx-auto mt-6 mb-24 rounded-[3rem] bg-gradient-to-br from-pink-100 via-brand-50 to-white pt-16 pb-20 md:pt-20 md:pb-24 px-6 md:px-20 shadow-floating border-[6px] border-white overflow-hidden flex flex-col items-center text-center">
+                
+                <!-- Floating Decorative Elements -->
+                <div class="absolute top-10 left-10 md:left-20 text-4xl md:text-5xl animate-float-slow opacity-80">☁️</div>
+                <div class="absolute top-20 right-10 md:right-24 text-4xl md:text-5xl animate-float-sway opacity-90" style="animation-delay: 1.5s;">🎈</div>
+                <div class="absolute bottom-16 left-12 md:left-32 text-3xl animate-pulse opacity-80">✨</div>
+                <div class="absolute top-1/2 left-4 text-3xl animate-float-sway opacity-70" style="animation-delay: 0.5s;">🌸</div>
+                <div class="absolute top-1/3 right-8 text-2xl animate-float-slow opacity-70" style="animation-delay: 3s;">💖</div>
+
+                <!-- Glow Background Orbs -->
+                <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-[150%] h-[150%] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-white via-transparent to-transparent opacity-60 pointer-events-none"></div>
+
+                <div class="relative z-10 mb-10 md:mb-12">
+                    <span class="inline-block bg-white/70 px-6 py-2.5 rounded-full text-brand-600 font-bold text-xs md:text-sm tracking-widest uppercase shadow-sm border border-white/80 backdrop-blur-md animate-pulse-glow mb-6">
+                        Hari Paling Spesial ✨
+                    </span>
+                    <h1 class="text-6xl md:text-8xl font-cursive text-brand-800 leading-[1.1] drop-shadow-sm">
+                        Happy Birthday <br><span class="text-brand-500 relative inline-block">Cintaku <span class="absolute -top-4 -right-8 md:-right-12 text-3xl md:text-4xl animate-heartbeat text-brand-400">❤</span></span>
+                    </h1>
+                    <p class="text-gray-600 text-lg md:text-xl mt-6 max-w-2xl mx-auto font-medium leading-relaxed">
+                        Terima kasih sudah hadir dan menjadi bagian terindah dalam hidupku. Semoga hari spesialmu penuh dengan keajaiban dan tawa!
+                    </p>
+                </div>
+
+                <!-- Animated Capybara -->
+                <div class="relative w-full flex justify-center items-center h-[200px] md:h-[250px] z-20 mt-4 md:mt-8 group">
+                    <div class="relative animate-float-capybara cursor-pointer">
+                        <!-- Cute Frame & Capybara Picture -->
+                        <div class="w-48 h-48 md:w-60 md:h-60 rounded-full overflow-hidden border-[6px] border-white shadow-[0_20px_40px_rgba(244,63,94,0.3)] relative z-20 group-hover:scale-105 transition-transform duration-500">
+                            <img src="capybara.png" alt="Cute Capybara" class="w-full h-full object-cover group-hover:rotate-3 transition-transform duration-500" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1588600958832-0ac1e3e78a2e?auto=format&fit=crop&w=500&q=80';">
+                        </div>
+                        
+                        <!-- Accessories around Capybara -->
+                        <div class="absolute -top-8 right-2 md:-top-10 md:right-4 text-5xl md:text-6xl z-30 animate-bounce drop-shadow-md">🥳</div>
+                        <div class="absolute -bottom-4 -left-6 md:-bottom-6 md:-left-8 text-5xl md:text-6xl z-30 animate-float-sway drop-shadow-md">🎁</div>
+                        <div class="absolute top-1/2 -right-12 md:-right-16 text-4xl z-10 animate-heartbeat">💖</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BAGIAN SURAT (Cute Postcard Style) -->
+            <section id="surat" class="pt-8 mb-24 max-w-4xl mx-auto w-full px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl md:text-5xl font-cursive text-brand-700 flex justify-center items-center gap-3 drop-shadow-sm">
+                        <span class="animate-wiggle">📜</span> Pesan Dari Hati <span class="animate-wiggle">✨</span>
+                    </h2>
+                    <p class="text-gray-500 mt-2 font-medium text-lg">Spesial ditulis Untuk kamu</p>
+                </div>
+                
+                <div class="relative w-full group max-w-3xl mx-auto">
+                    <!-- Decorative Envelope Flap (Background) -->
+                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-[85%] md:w-[90%] h-20 bg-brand-200 rounded-t-3xl -z-10 shadow-lg transition-transform duration-500 group-hover:-translate-y-4"></div>
+                    <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 w-[92%] md:w-[95%] h-10 bg-brand-300 rounded-t-3xl -z-10 shadow-md"></div>
+                    
+                    <!-- Main Letter Card -->
+                    <div class="bg-gradient-to-br from-[#ffffff] to-[#fff0f3] p-10 md:p-16 rounded-b-[2.5rem] rounded-t-xl shadow-floating relative border border-brand-100 flex flex-col justify-center transform transition-all duration-500 group-hover:scale-[1.02] group-hover:shadow-[0_25px_60px_-10px_rgba(244,63,94,0.4)]">
+                        
+                        <!-- Postmark/Stamp -->
+                        <div class="absolute top-6 right-6 md:top-10 md:right-10 flex flex-col items-center opacity-80 transform rotate-[15deg]">
+                            <div class="w-16 h-16 md:w-20 md:h-20 border-2 border-brand-400 rounded-full flex items-center justify-center border-dashed animate-spin-slow bg-white/50 backdrop-blur-sm">
+                                <span class="text-3xl md:text-4xl text-brand-500">🌹</span>
+                            </div>
+                            <span class="font-cursive text-brand-600 text-sm md:text-base mt-2 font-bold tracking-wider">First Class Love</span>
+                        </div>
+
+                        <!-- Pinned Decor (Top Center) -->
+                        <div class="absolute top-4 left-1/2 transform -translate-x-1/2 w-5 h-5 rounded-full bg-brand-500 shadow-md border-2 border-brand-200 z-10 flex items-center justify-center">
+                            <div class="w-1.5 h-1.5 bg-white rounded-full opacity-60 relative -top-0.5 -left-0.5"></div>
+                        </div>
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-1.5 h-8 bg-gray-300/80 rounded-b-full -z-10 shadow-sm"></div>
+
+                        <div class="relative z-10 mt-6 md:mt-2">
+                            <p class="font-cursive text-3xl md:text-4xl text-brand-800 mb-8 drop-shadow-sm font-bold">Hai Sayang,</p>
+                            
+                            <div class="space-y-6 font-cursive text-2xl md:text-3xl text-gray-700 leading-relaxed md:leading-[1.8] tracking-wide">
+                                <p>Selamat ulang tahun ya! 🎉 Makasih banget udah selalu ada buat aku. Lewatin susah senang bareng, ketawa bareng, dan kadang ngambek-ngambekan gemes hehe.</p>
+                                <p>Semoga di umur yang baru ini, semua impian kamu bisa pelan-pelan terwujud. Jangan lupa buat selalu bahagia dan jaga kesehatan ya. <span class="text-brand-500">You mean the world to me!</span></p>
+                                <p>I love you more than words can say. 💕</p>
+                            </div>
+
+                            <div class="mt-16 text-right border-t-2 border-dashed border-brand-200 pt-8 relative">
+                                <!-- Tiny floating heart near signature -->
+                                <span class="absolute right-32 -top-4 text-2xl animate-float-up opacity-0">💖</span>
+                                
+                                <p class="text-gray-400 font-sans text-xs md:text-sm uppercase tracking-[0.2em] font-bold mb-2">Tertanda, yang selalu menyayangimu</p>
+                                <p class="font-cursive text-4xl md:text-5xl text-brand-600 font-bold drop-shadow-sm animate-pulse-glow">ROCKY A.Z ❤️</p>
+                            </div>
+                        </div>
+
+                        <!-- Sparkles and decorations -->
+                        <div class="absolute bottom-8 left-8 text-3xl md:text-4xl opacity-40 animate-pulse">✨</div>
+                        <div class="absolute bottom-12 right-1/2 text-2xl md:text-3xl opacity-30 animate-pulse" style="animation-delay: 1s;">✨</div>
+                        <div class="absolute top-1/2 left-4 text-4xl opacity-20 transform -rotate-12">🌷</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BAGIAN PLAYLIST (Berfungsi Memutar Audio) -->
+            <section id="playlist" class="pt-8 mb-24 max-w-5xl mx-auto w-full px-4">
+                <div class="text-center mb-8">
+                    <h2 class="text-4xl font-cursive text-brand-700 flex justify-center items-center gap-2">
+                        <span class="animate-bounce">🎧</span> Playlist
+                    </h2>
+                    <p class="text-gray-500 mt-2">Lagu yang selalu mengingatkanku padamu</p>
+                </div>
+                
+                <div id="playlist-container" class="is-paused bg-gradient-to-br from-brand-100/90 to-pink-50/90 backdrop-blur-xl rounded-[3rem] p-8 md:p-12 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12 shadow-floating border-2 border-white w-full">
+                    
+                    <!-- Floating Music Notes -->
+                    <div class="absolute top-8 left-8 text-3xl opacity-0 animate-float-note-1 drop-shadow-md hidden md:block">🎵</div>
+                    <div class="absolute top-24 right-10 text-4xl opacity-0 animate-float-note-2 drop-shadow-md hidden md:block">🎶</div>
+                    <div class="absolute bottom-16 left-1/2 text-2xl opacity-0 animate-float-note-3 drop-shadow-md hidden md:block">🎵</div>
+                    
+                    <!-- Light beam effect -->
+                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-full h-full bg-gradient-to-b from-white/40 to-transparent pointer-events-none"></div>
+
+                    <!-- Kiri: Piringan Hitam (No Photo, CSS/Emoji) -->
+                    <div class="relative z-10 flex-shrink-0">
+                        <div class="w-48 h-48 md:w-56 md:h-56 mx-auto rounded-full overflow-hidden border-[6px] border-white shadow-[0_15px_35px_rgba(251,113,133,0.3)] animate-spin-slow relative group cursor-pointer bg-gray-900">
+                            <!-- Vinyl grooves -->
+                            <div class="absolute inset-2 rounded-full border border-gray-700/50"></div>
+                            <div class="absolute inset-5 rounded-full border border-gray-700/50"></div>
+                            <div class="absolute inset-8 rounded-full border border-gray-700/50"></div>
+                            <div class="absolute inset-11 rounded-full border border-gray-700/50"></div>
+                            
+                            <!-- Vinyl Inner Hole and Label -->
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-gradient-to-br from-brand-300 to-brand-500 rounded-full z-10 border-4 border-gray-800 flex items-center justify-center shadow-inner">
+                                <div class="w-4 h-4 bg-gray-900 rounded-full border-2 border-white relative z-20"></div>
+                                <span class="absolute text-3xl animate-pulse z-10">🎵</span>
+                            </div>
+                            <!-- Glossy overlay -->
+                            <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent"></div>
+                        </div>
+                    </div>
+
+                    <!-- Tengah: Info Lagu & Visualizer -->
+                    <div class="relative z-10 flex flex-col items-center md:items-start text-center md:text-left flex-grow">
+                        <!-- Animated Equalizer -->
+                        <div class="flex gap-1.5 items-end h-8 mb-4">
+                            <div class="w-2 bg-brand-400 rounded-full animate-equalizer-1"></div>
+                            <div class="w-2 bg-brand-500 rounded-full animate-equalizer-2"></div>
+                            <div class="w-2 bg-brand-400 rounded-full animate-equalizer-3"></div>
+                            <div class="w-2 bg-brand-500 rounded-full animate-equalizer-1" style="animation-delay: 0.5s;"></div>
+                            <div class="w-2 bg-brand-300 rounded-full animate-equalizer-2 hidden md:block"></div>
+                        </div>
+
+                        <h4 class="font-bold text-4xl md:text-5xl text-brand-800 font-sans tracking-tight mb-2">Perfect</h4>
+                        <p class="text-brand-500 font-medium text-xl md:text-2xl">Ed Sheeran</p>
+                    </div>
+                    
+                    <!-- Kanan: Player Controls -->
+                    <div class="relative z-10 flex justify-center gap-6 items-center bg-white/60 py-6 px-8 rounded-full shadow-md border border-white backdrop-blur-md flex-shrink-0 mt-4 md:mt-0">
+                        <button class="text-3xl text-brand-400 hover:text-brand-600 transition-colors transform hover:-translate-x-1">⏮</button>
+                        <!-- Play/Pause Button ber-ID -->
+                        <button id="play-pause-btn" class="w-20 h-20 bg-gradient-to-tr from-brand-400 to-brand-500 rounded-full flex items-center justify-center hover:scale-105 transition-transform shadow-[0_8px_20px_rgba(244,63,94,0.4)] text-3xl text-white animate-pulse-glow">▶</button>
+                        <button class="text-3xl text-brand-400 hover:text-brand-600 transition-colors transform hover:translate-x-1">⏭</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- REDESIGNED: KENANGAN KITA (Full text, no cutting) -->
+            <section id="kenangan" class="pt-10 pb-24 relative overflow-hidden">
+                <!-- Background Blob for Memory Cards -->
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-80 bg-brand-200/30 rounded-full blur-[80px] -z-10 animate-pulse-glow"></div>
+                
+                <div class="text-center mb-16 relative z-10">
+                    <h2 class="text-4xl font-cursive text-brand-700 flex justify-center items-center gap-3 drop-shadow-sm">
+                        Kenangan Kita <span class="animate-wiggle inline-block">💭</span>
+                    </h2>
+                    <p class="text-gray-500 mt-2">Momen-momen manis yang selalu bikin aku senyum sendiri.</p>
+                </div>
+                
+                <!-- Scattered Grid: Memory Cards (Now with full text readable) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4 relative z-10 max-w-6xl mx-auto">
+                    
+                    <!-- Memory Card 1 -->
+                    <div class="group perspective-1000 h-full">
+                        <div class="relative w-full h-full min-h-[16rem] bg-white/70 backdrop-blur-md rounded-[2.5rem] pt-8 pb-6 px-6 shadow-soft border-2 border-white transform transition-all duration-500 hover:-translate-y-4 hover:rotate-2 hover:shadow-floating flex flex-col items-center justify-start text-center cursor-pointer">
+                            <div class="w-20 h-20 bg-gradient-to-tr from-brand-100 to-pink-50 rounded-full flex items-center justify-center text-4xl mb-4 shadow-inner group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500 shrink-0">☕</div>
+                            <h3 class="font-cursive text-2xl text-brand-800 font-bold mb-3">First Date!</h3>
+                            <!-- Teks dipastikan penuh -->
+                            <p class="text-sm text-gray-600 leading-relaxed">Masih malu-malu tapi salting banget pas pertama kali ngopi bareng. Ingat banget kamu minumnya buru-buru saking gugupnya! 😂</p>
+                            <div class="absolute -top-3 -right-3 text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-bounce">💖</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Memory Card 2 -->
+                    <div class="group perspective-1000 h-full lg:mt-8">
+                        <div class="relative w-full h-full min-h-[16rem] bg-white/70 backdrop-blur-md rounded-[2.5rem] pt-8 pb-6 px-6 shadow-soft border-2 border-white transform transition-all duration-500 hover:-translate-y-4 hover:-rotate-2 hover:shadow-floating flex flex-col items-center justify-start text-center cursor-pointer">
+                            <div class="w-20 h-20 bg-gradient-to-tr from-brand-100 to-pink-50 rounded-full flex items-center justify-center text-4xl mb-4 shadow-inner group-hover:scale-110 group-hover:-rotate-12 transition-transform duration-500 shrink-0">🛵</div>
+                            <h3 class="font-cursive text-2xl text-brand-800 font-bold mb-3">Night Ride</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">Muter-muter kota malam hari keliling jalanan sambil cerita ngalor-ngidul nggak jelas. Anginnya dingin tapi pelukanmu hangat banget.</p>
+                            <div class="absolute -top-3 -right-3 text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-bounce">🌟</div>
+                        </div>
+                    </div>
+
+                    <!-- Memory Card 3 -->
+                    <div class="group perspective-1000 h-full">
+                        <div class="relative w-full h-full min-h-[16rem] bg-white/70 backdrop-blur-md rounded-[2.5rem] pt-8 pb-6 px-6 shadow-soft border-2 border-white transform transition-all duration-500 hover:-translate-y-4 hover:rotate-2 hover:shadow-floating flex flex-col items-center justify-start text-center cursor-pointer">
+                            <div class="w-20 h-20 bg-gradient-to-tr from-brand-100 to-pink-50 rounded-full flex items-center justify-center text-4xl mb-4 shadow-inner group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500 shrink-0">🎬</div>
+                            <h3 class="font-cursive text-2xl text-brand-800 font-bold mb-3">Movie Time</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">Niatnya nonton film horor biar bisa modus ketakutan, eh malah ketawa-ketawa gara-gara hantunya lucu. Best movie date ever!</p>
+                            <div class="absolute -top-3 -right-3 text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-bounce">🍿</div>
+                        </div>
+                    </div>
+
+                    <!-- Memory Card 4 -->
+                    <div class="group perspective-1000 h-full lg:mt-8">
+                        <div class="relative w-full h-full min-h-[16rem] bg-white/70 backdrop-blur-md rounded-[2.5rem] pt-8 pb-6 px-6 shadow-soft border-2 border-white transform transition-all duration-500 hover:-translate-y-4 hover:-rotate-2 hover:shadow-floating flex flex-col items-center justify-start text-center cursor-pointer">
+                            <div class="w-20 h-20 bg-gradient-to-tr from-brand-100 to-pink-50 rounded-full flex items-center justify-center text-4xl mb-4 shadow-inner group-hover:scale-110 group-hover:-rotate-12 transition-transform duration-500 shrink-0">🍡</div>
+                            <h3 class="font-cursive text-2xl text-brand-800 font-bold mb-3">Hunting Jajan</h3>
+                            <p class="text-sm text-gray-600 leading-relaxed">Momen keliling nyari jajanan pinggir jalan berdua. Walau cuma jajan pentol atau es krim, kalau makannya sama kamu rasanya jadi bintang lima! 😋</p>
+                            <div class="absolute -top-3 -right-3 text-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-bounce">🍦</div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- RESTORED: GALERI FOTO (Polaroid Wall with Real Photos) -->
+            <section id="galeri-foto" class="pt-16 pb-32 relative overflow-hidden">
+                <!-- Background Elements -->
+                <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-pink-50/50 via-transparent to-transparent -z-20"></div>
+                <div class="absolute top-1/2 left-1/4 w-96 h-96 bg-brand-200/40 rounded-full blur-[100px] -z-10 animate-pulse-glow"></div>
+                <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-pink-300/30 rounded-full blur-[80px] -z-10 animate-pulse-glow" style="animation-delay: 2s;"></div>
+                
+                <div class="text-center mb-20 relative z-10">
+                    <span class="inline-block py-1.5 px-5 rounded-full bg-brand-100 text-brand-600 font-bold text-xs uppercase tracking-widest mb-4 animate-bounce border border-brand-200">Scrapbook</span>
+                    <h2 class="text-5xl font-cursive text-brand-700 flex justify-center items-center gap-3 drop-shadow-sm">
+                        Galeri Kita <span class="animate-wiggle inline-block text-5xl">📸</span>
+                    </h2>
+                    <p class="text-gray-500 mt-4 text-lg font-medium">Kumpulan memori manis yang bakal aku simpan selamanya.</p>
+                </div>
+                
+                <!-- Cute Animated Scrapbook Grid -->
+                <div class="flex flex-wrap justify-center gap-8 md:gap-12 px-4 relative z-10 max-w-6xl mx-auto">
+                    
+                    <!-- Polaroid 1 -->
+                    <div class="relative w-64 p-4 bg-white rounded-2xl shadow-[0_15px_40px_rgba(251,113,133,0.15)] border-2 border-brand-50 animate-float-sway group cursor-pointer" style="animation-delay: 0s;">
+                        <!-- Cute Pin -->
+                        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-brand-400 rounded-full shadow-md border-2 border-white flex items-center justify-center z-20 transition-transform group-hover:-translate-y-1">
+                            <div class="w-3 h-3 bg-white/60 rounded-full"></div>
+                        </div>
+                        <!-- Image -->
+                        <div class="overflow-hidden rounded-xl h-56 relative border border-gray-100">
+                            <img src="pict1.jpeg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Pic1">
+                            <!-- Overlay on hover -->
+                            <div class="absolute inset-0 bg-brand-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
+                                <span class="text-5xl animate-heartbeat drop-shadow-md">💖</span>
+                            </div>
+                        </div>
+                        <p class="font-cursive text-center mt-5 text-brand-800 text-3xl font-bold">So Cute!</p>
+                        <!-- Floating decorations -->
+                        <span class="absolute -bottom-6 -right-6 text-5xl animate-bounce drop-shadow-md">🌸</span>
+                    </div>
+
+                    <!-- Polaroid 2 -->
+                    <div class="relative w-64 p-4 bg-white rounded-2xl shadow-[0_15px_40px_rgba(251,113,133,0.15)] border-2 border-brand-50 animate-float-sway group cursor-pointer md:mt-16" style="animation-delay: 1.2s; animation-direction: reverse;">
+                        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-yellow-400 rounded-full shadow-md border-2 border-white flex items-center justify-center z-20 transition-transform group-hover:-translate-y-1">
+                            <div class="w-3 h-3 bg-white/60 rounded-full"></div>
+                        </div>
+                        <div class="overflow-hidden rounded-xl h-56 relative border border-gray-100">
+                            <img src="pict2.jpeg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Pic2">
+                            <div class="absolute inset-0 bg-yellow-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
+                                <span class="text-5xl animate-heartbeat drop-shadow-md">🌟</span>
+                            </div>
+                        </div>
+                        <p class="font-cursive text-center mt-5 text-brand-800 text-3xl font-bold">Dinner</p>
+                        <span class="absolute -top-8 -left-8 text-5xl animate-float-slow drop-shadow-md">✨</span>
+                    </div>
+
+                    <!-- Polaroid 3 -->
+                    <div class="relative w-64 p-4 bg-white rounded-2xl shadow-[0_15px_40px_rgba(251,113,133,0.15)] border-2 border-brand-50 animate-float-sway group cursor-pointer" style="animation-delay: 0.5s;">
+                        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-blue-400 rounded-full shadow-md border-2 border-white flex items-center justify-center z-20 transition-transform group-hover:-translate-y-1">
+                            <div class="w-3 h-3 bg-white/60 rounded-full"></div>
+                        </div>
+                        <div class="overflow-hidden rounded-xl h-56 relative border border-gray-100">
+                            <img src="pict3.jpeg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Pic3">
+                            <div class="absolute inset-0 bg-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
+                                <span class="text-5xl animate-heartbeat drop-shadow-md">🥰</span>
+                            </div>
+                        </div>
+                        <p class="font-cursive text-center mt-5 text-brand-800 text-3xl font-bold">With You</p>
+                        <span class="absolute -bottom-6 -left-6 text-5xl animate-wiggle drop-shadow-md">🧸</span>
+                    </div>
+
+                    <!-- Polaroid 4 -->
+                    <div class="relative w-64 p-4 bg-white rounded-2xl shadow-[0_15px_40px_rgba(251,113,133,0.15)] border-2 border-brand-50 animate-float-sway group cursor-pointer md:mt-12" style="animation-delay: 2s; animation-direction: reverse;">
+                        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-purple-400 rounded-full shadow-md border-2 border-white flex items-center justify-center z-20 transition-transform group-hover:-translate-y-1">
+                            <div class="w-3 h-3 bg-white/60 rounded-full"></div>
+                        </div>
+                        <div class="overflow-hidden rounded-xl h-56 relative border border-gray-100">
+                            <img src="pict4.jpeg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Pic4">
+                            <div class="absolute inset-0 bg-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
+                                <span class="text-5xl animate-heartbeat drop-shadow-md">💍</span>
+                            </div>
+                        </div>
+                        <p class="font-cursive text-center mt-5 text-brand-800 text-3xl font-bold">My Everything 💘</p>
+                        <span class="absolute -top-6 -right-8 text-5xl animate-float-slow drop-shadow-md" style="animation-delay: 1s;">🎀</span>
+                    </div>
+
+                     <!-- Polaroid 6 -->
+                    <div class="relative w-64 p-4 bg-white rounded-2xl shadow-[0_15px_40px_rgba(251,113,133,0.15)] border-2 border-brand-50 animate-float-sway group cursor-pointer md:mt-12" style="animation-delay: 2s; animation-direction: reverse;">
+                        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-purple-400 rounded-full shadow-md border-2 border-white flex items-center justify-center z-20 transition-transform group-hover:-translate-y-1">
+                            <div class="w-3 h-3 bg-white/60 rounded-full"></div>
+                        </div>
+                        <div class="overflow-hidden rounded-xl h-56 relative border border-gray-100">
+                            <img src="pict5.jpeg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Pic4">
+                            <div class="absolute inset-0 bg-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
+                                <span class="text-5xl animate-heartbeat drop-shadow-md">💍</span>
+                            </div>
+                        </div>
+                        <p class="font-cursive text-center mt-5 text-brand-800 text-3xl font-bold">My Beauty Girl 💘</p>
+                        <span class="absolute -top-6 -right-8 text-5xl animate-float-slow drop-shadow-md" style="animation-delay: 1s;">🎀</span>
+                    </div>
+                    
+                     <!-- Polaroid 6 -->
+                    <div class="relative w-64 p-4 bg-white rounded-2xl shadow-[0_15px_40px_rgba(251,113,133,0.15)] border-2 border-brand-50 animate-float-sway group cursor-pointer md:mt-12" style="animation-delay: 2s; animation-direction: reverse;">
+                        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-purple-400 rounded-full shadow-md border-2 border-white flex items-center justify-center z-20 transition-transform group-hover:-translate-y-1">
+                            <div class="w-3 h-3 bg-white/60 rounded-full"></div>
+                        </div>
+                        <div class="overflow-hidden rounded-xl h-56 relative border border-gray-100">
+                            <img src="pict6.jpeg" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Pic4">
+                            <div class="absolute inset-0 bg-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
+                                <span class="text-5xl animate-heartbeat drop-shadow-md">💍</span>
+                            </div>
+                        </div>
+                        <p class="font-cursive text-center mt-5 text-brand-800 text-3xl font-bold">My Lovely 💘</p>
+                        <span class="absolute -top-6 -right-8 text-5xl animate-float-slow drop-shadow-md" style="animation-delay: 1s;">🎀</span>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- SURPRISE BOX (Dramatic & Interactive) -->
+            <section id="surprise" class="mb-20 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-brand-900 via-gray-900 to-black rounded-[3rem] p-8 md:p-12 text-white flex flex-col items-center justify-center shadow-2xl border border-brand-500/30 relative overflow-hidden group">
+                
+                <!-- Animated glowing orbs in background -->
+                <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                    <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-brand-600 rounded-full mix-blend-screen filter blur-[80px] opacity-40 animate-pulse"></div>
+                    <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-pink-600 rounded-full mix-blend-screen filter blur-[100px] opacity-30 animate-pulse" style="animation-delay: 2s;"></div>
+                    <!-- Stars -->
+                    <div class="absolute top-10 left-20 text-white/50 text-xs animate-pulse">✦</div>
+                    <div class="absolute top-40 right-32 text-white/50 text-sm animate-pulse" style="animation-delay: 1s;">✦</div>
+                    <div class="absolute bottom-20 left-1/3 text-white/50 text-xl animate-pulse" style="animation-delay: 1.5s;">✦</div>
+                </div>
+
+                <!-- Horizontal Container -->
+                <div class="relative z-10 w-full flex flex-col md:flex-row items-center justify-between gap-8 max-w-5xl mx-auto">
+                    
+                    <!-- Text Section -->
+                    <div class="md:w-1/2 text-center md:text-left">
+                        <h2 class="text-4xl md:text-5xl font-cursive text-transparent bg-clip-text bg-gradient-to-r from-brand-200 via-pink-300 to-white mb-4 drop-shadow-lg tracking-wide">
+                            Surprise!
+                        </h2>
+                        <p class="text-gray-300 text-lg">Ada sesuatu yang sangat spesial menunggu di dalam kotak ajaib ini. Klik kotaknya untuk membukanya!</p>
+                    </div>
+                    
+                    <!-- Interactive Gift Box Section -->
+                    <div class="md:w-1/2 flex justify-center items-center">
+                        <div class="relative cursor-pointer select-none" onclick="triggerSurprise()" id="gift-box-container">
+                            <!-- Box Emoji -->
+                            <div id="gift-box" class="text-7xl md:text-8xl transform transition-transform duration-300 hover:scale-110 animate-wiggle filter drop-shadow-[0_0_15px_rgba(251,113,133,0.8)] relative z-20">
+                                🎁
+                            </div>
+                            <!-- Glow behind the box -->
+                            <div id="gift-glow" class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-brand-400 rounded-full filter blur-[30px] opacity-0 transition-opacity duration-1000 z-10"></div>
+                            
+                            <!-- Click Me Hint -->
+                            <div id="click-hint" class="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-brand-300 text-xs font-bold tracking-widest uppercase animate-bounce whitespace-nowrap">
+                                Tap Me!
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Hidden Reward Message (Reveals on click) -->
+                <div id="surprise-message" class="hidden mt-10 transition-all duration-1000 opacity-0 transform translate-y-10 w-full max-w-2xl mx-auto">
+                    <div class="bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-[2rem] shadow-[0_0_40px_rgba(244,63,94,0.3)] relative overflow-hidden text-center md:text-left flex flex-col md:flex-row items-center gap-6">
+                        <!-- Shine effect -->
+                        <div class="absolute top-0 -left-[100%] w-1/2 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-20deg] animate-[shine_3s_ease-in-out_infinite]"></div>
+                        
+                        <!-- Left Side: Icon -->
+                        <div class="flex-shrink-0 text-6xl drop-shadow-md animate-pulse">🎟️</div>
+                        
+                        <!-- Right Side: Details -->
+                        <div class="flex-grow">
+                            <h3 class="text-2xl md:text-3xl font-bold text-brand-200 mb-2 drop-shadow-md">Golden Voucher!</h3>
+                            <div class="bg-black/30 rounded-xl p-4 mb-3 border border-white/10">
+                                <p class="text-lg text-white font-medium mb-1">Voucher "Bebas Minta Apa Aja"</p>
+                                <!-- <p class="text-sm text-gray-300">Screenshoot ini dan tukarkan ke aku untuk 1x permintaan bebas hari ini! (Syarat & ketentuan: jangan aneh-aneh ya 😜)</p> -->
+                            </div>
+                            <p class="font-cursive text-3xl text-brand-300">I Love You! ❤️</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="text-center py-8 text-gray-400 text-sm border-t border-brand-100">
+                <p>Dibuat dengan penuh ❤️ untuk kamu. -GLORIA SANTI SILITONGA</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT LOGIC                           -->
+    <!-- ========================================== -->
+    <script>
+        // 1. KONFIGURASI TANGGAL JADIAN (Untuk Login)
+        const TARGET_DD = "24"; 
+        const TARGET_MM = "05";
+        const TARGET_YYYY = "2004";
+
+        // Variabel untuk elemen musik & UI Playlist
+        const bgMusic = document.getElementById('bg-music');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const playlistContainer = document.getElementById('playlist-container');
+
+        // Pastikan UI kembali ke Play jika audio gagal diputar (misal karena kebijakan browser)
+        bgMusic.addEventListener('pause', () => {
+            playPauseBtn.innerHTML = '▶';
+            playlistContainer.classList.add('is-paused');
+        });
+        
+        bgMusic.addEventListener('play', () => {
+            playPauseBtn.innerHTML = '⏸';
+            playlistContainer.classList.remove('is-paused');
+        });
+
+        // 2. LOGIKA LOGIN & INPUT TANGGAL
+        const inputDD = document.getElementById('input-dd');
+        const inputMM = document.getElementById('input-mm');
+        const inputYYYY = document.getElementById('input-yyyy');
+        const btnMasuk = document.getElementById('btn-masuk');
+        const errorMsg = document.getElementById('error-message');
+
+        inputDD.addEventListener('input', function() { if (this.value.length >= 2) inputMM.focus(); resetError(); });
+        inputMM.addEventListener('input', function() { if (this.value.length >= 2) inputYYYY.focus(); resetError(); });
+        inputYYYY.addEventListener('input', function() { resetError(); });
+
+        function resetError() {
+            errorMsg.classList.remove('opacity-100');
+            errorMsg.classList.add('opacity-0');
+        }
+
+        btnMasuk.addEventListener('click', function() {
+            const valDD = inputDD.value.padStart(2, '0');
+            const valMM = inputMM.value.padStart(2, '0');
+            const valYYYY = inputYYYY.value;
+
+            if (valDD === TARGET_DD && valMM === TARGET_MM && valYYYY === TARGET_YYYY) {
+                btnMasuk.innerHTML = '<span class="animate-spin text-xl">↻</span> Membuka...';
+                
+                document.getElementById('login-screen').classList.add('fade-out');
+                
+                // MEMAINKAN MUSIK SAAT BERHASIL LOGIN
+                bgMusic.volume = 1;
+bgMusic.muted = false;
+
+bgMusic.play()
+.then(() => {
+    playPauseBtn.innerHTML = '⏸';
+    playlistContainer.classList.remove('is-paused');
+})
+.catch((error) => {
+    console.log('Audio gagal diputar:', error);
+});
+
+                setTimeout(() => {
+                    document.getElementById('login-screen').classList.add('hidden');
+                    const mainApp = document.getElementById('main-app');
+                    mainApp.classList.remove('hidden');
+                    void mainApp.offsetWidth; 
+                    mainApp.classList.remove('fade-out');
+                    window.scrollTo(0,0);
+                }, 800); 
+                
+            } else {
+                errorMsg.classList.remove('opacity-0');
+                errorMsg.classList.add('opacity-100');
+                const card = btnMasuk.parentElement;
+                card.classList.add('animate-pulse');
+                setTimeout(() => card.classList.remove('animate-pulse'), 500);
+            }
+        });
+
+        // 2B. LOGIKA TOMBOL PLAYLIST
+        playPauseBtn.addEventListener('click', function() {
+            if (bgMusic.paused) {
+                bgMusic.play();
+            } else {
+                bgMusic.pause();
+            }
+        });
+
+        // 3. ANIMASI FLOATING HEARTS (LOGIN SCREEN)
+        function createHearts() {
+            const container = document.getElementById('hearts-container');
+            const heartIcons = ['❤', '💖', '💗', '💓', '✨'];
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'absolute animate-float-up opacity-0 pointer-events-none drop-shadow-md';
+                heart.innerHTML = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+                const left = Math.random() * 100;
+                const size = Math.random() * 2 + 1;
+                const delay = Math.random() * 8;
+                const duration = Math.random() * 4 + 6;
+                heart.style.left = `${left}%`;
+                heart.style.fontSize = `${size}rem`;
+                heart.style.animationDelay = `${delay}s`;
+                heart.style.animationDuration = `${duration}s`;
+                const colors = ['#fca5a5', '#fbcfe8', '#fda4af', '#fff'];
+                heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+                container.appendChild(heart);
+            }
+        }
+        createHearts();
+
+        // 4. SURPRISE LOGIC
+        function triggerSurprise() {
+            var duration = 5 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount,
+                    origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+                }));
+                confetti(Object.assign({}, defaults, { particleCount,
+                    origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+                }));
+            }, 250);
+            
+            const giftBox = document.getElementById('gift-box');
+            const giftGlow = document.getElementById('gift-glow');
+            const msg = document.getElementById('surprise-message');
+            const hint = document.getElementById('click-hint');
+            const container = document.getElementById('gift-box-container');
+            
+            giftBox.style.animation = 'none';
+            giftBox.innerHTML = '💝'; 
+            giftBox.classList.add('animate-bounce');
+            
+            if(hint) hint.style.display = 'none';
+            
+            giftGlow.classList.remove('opacity-0');
+            giftGlow.classList.add('opacity-80');
+            
+            msg.classList.remove('hidden');
+            setTimeout(() => {
+                msg.classList.remove('opacity-0', 'translate-y-10');
+                msg.classList.add('opacity-100', 'translate-y-0');
+            }, 100); 
+            
+            container.onclick = null;
+            container.classList.remove('cursor-pointer');
+        }
+
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes shine {
+                0% { left: -100%; }
+                20% { left: 200%; }
+                100% { left: 200%; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
